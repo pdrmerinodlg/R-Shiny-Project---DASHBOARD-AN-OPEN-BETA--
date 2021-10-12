@@ -67,14 +67,14 @@ shinyApp(
                                     width = "100%"
                         ),
                         
-                        dateInput("label_start", "inicio",
+                        dateInput("label_start", "start",
                                   value = "2021-01-01",width = "100%"),
                         
-                        dateInput("label_end", "fin",
+                        dateInput("label_end", "expired",
                                   value = "2021-01-01",width = "100%"),
                         
                         
-                        textInput("label_obra","IBAN",
+                        textInput("label_iban","IBAN",
                                   placeholder = 'ESXX',
                                   width = "100%"
                         ),
@@ -96,8 +96,6 @@ shinyApp(
     )
   ),
   
-  
-  
   #-----------------------------------------------------------------------------
   #                                 SERVER
   #-----------------------------------------------------------------------------
@@ -107,26 +105,74 @@ shinyApp(
     #---------------------------------------------------------------------------
     # MONGO DATABASE CONNECTION
     #---------------------------------------------------------------------------
-    # collection_name_XXX
-    # database_name_XXX
+    # collection_name_XXX = users_collection
+    # database_name_XXX = dashboard
     # USER_XXX
     # PASS_XXX
     # SERVER_IP_OR_DNS
-    # MONGO_PORT
+    # MONGO_PORT = 27017
     # DATABASE_XXX
+    #---------------------------------------------------------------------------
+    # DEMO DATA TO GENERATE COLLECTION:
+    #
+    # {
+    #   "email" : "jhon.doe@shiny.com",
+    #   "password" : "ASDF",
+    #   "rol" : "FALSE",
+    #   "start" : "2020-07-06",
+    #   "expired" : "2022-07-31",
+    #   "IBAN" : "CY17002001280000001200527600"
+    # }
+    # 
+    # {
+    #   "email" : "sussane.doe@shiny.com",
+    #   "password" : "12345",
+    #   "rol" : "FALSE",
+    #   "start" : "2020-01-01",
+    #   "expired" : "2022-12-31",
+    #   "IBAN" : "ES6000491500051234567892"
+    # }
+    # 
+    # {
+    #   "email" : "murphy@shiny.com",
+    #   "password" : "#456,QWeRty",
+    #   "rol" : "TRUE",
+    #   "start" : "2019-09-15",
+    #   "expired" : "2021-12-31",
+    #   "IBAN" : "AD1400080001001234567890"
+    # }
+    # 
+    # {
+    #   "email" : "celine@test.net",
+    #   "password" : "xSf97",
+    #   "rol" : "FALSE",
+    #   "start" : "2020-04-01",
+    #   "expired" : "2022-12-31",
+    #   "IBAN" : "IS030001121234561234567890"
+    # }
     #---------------------------------------------------------------------------
     data_base <- mongo(collection = "collection_name_XXX", db = "database_name_XXX",
                        url ="mongodb://USER_XXX:PASS_XXX@SERVER_IP_OR_DNS:MONGO_PORT/DATABASE_XXX")
-    
-    df <- data_base$find(fields = '{"_id" : true, "email" : true,"password" : true, "rol" : true, "start" : true, "expired" : true}')
+
+  
+    df <- data_base$find(fields = '{"_id" : true, "email" : true,"password" : true, "rol" : true, "start" : true, "expired" : true, "IBAN": true}')
 
     object <- data.frame(df)
   
-    output$tabla_completa <- renderDataTable(object, options = list(pageLength = 5,searchHighlight = FALSE) )
+    output$users_table = renderDT(object, selection = 'single', rownames = F, editable = T, filter = 'bottom',options = list(scrollX = TRUE))
     
-    x = object
-    
-    output$users_table = renderDT(x, selection = 'single', rownames = F, editable = T, filter = 'bottom',options = list(scrollX = TRUE))
+    #---------------------------------------------------------------------------
+    # FUNCTION: updateDataFrame ()
+    # DESCRIPTION: reload data frame to make reactive UI
+    #---------------------------------------------------------------------------
+    updateDataFrame <- function(){
+      
+      df <- data_base$find(fields = '{"_id" : true, "email" : true,"password" : true, "rol" : true, "start" : true, "expired" : true, "IBAN": true}')
+      
+      object <- data.frame(df)
+      
+      output$users_table = renderDT(object, selection = 'single', rownames = F, editable = T, filter = 'bottom',options = list(scrollX = TRUE))
+    }
     
     
     #---------------------------------------------------------------------------
@@ -138,15 +184,18 @@ shinyApp(
                         "password":"',toString(input$label_password),'",
                         "rol":"',toString(input$label_rol),'",
                         "start":"',toString(input$label_start),'",
-                        "expired":"',toString(input$label_start),'"
+                        "expired":"',toString(input$label_start),'",
+                        "IBAN":"',toString(input$label_iban),'"
                         }', sep = "")
       
       #DATABASE INSERT
       data_base$insert(toString(usuario))
       
+      #RELOAD DATAFRAME
+      updateDataFrame()
+      
       #CLOSE BSMODAL
       removeModal()
       toggleModal(session, modalId = "modal_add_button", toggle = "toggle")
     })
-    
   })
