@@ -11,5 +11,6 @@ The purpose of this panel is to connect to a mongo database and manage user cont
 In this version I show how to:
 * connection to mongo database
 * create user
+* make a reactive data frame
 
 This beta is inspired by the work of Jason Bryer -> https://github.com/jbryer 
