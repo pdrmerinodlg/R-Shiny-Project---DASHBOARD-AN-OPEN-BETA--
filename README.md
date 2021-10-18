@@ -15,3 +15,5 @@ In this version I show how to:
 * add login page
 
 This beta is inspired by the work of Jason Bryer -> https://github.com/jbryer 
+
+- Login page is fully refered in -> https://datastorm-open.github.io/shinymanager/
