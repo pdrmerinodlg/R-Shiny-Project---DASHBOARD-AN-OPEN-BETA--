@@ -12,5 +12,6 @@ In this version I show how to:
 * connection to mongo database
 * create user
 * make a reactive data frame
+* add login page
 
 This beta is inspired by the work of Jason Bryer -> https://github.com/jbryer 
