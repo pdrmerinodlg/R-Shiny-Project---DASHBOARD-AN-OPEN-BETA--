@@ -18,4 +18,5 @@ This beta is inspired by the work of Jason Bryer -> https://github.com/jbryer
 
 - Login page is fully refered in -> https://datastorm-open.github.io/shinymanager/
 
+* APP DEMO (Login an create new user)
 ![](Login(NewUser).gif)
