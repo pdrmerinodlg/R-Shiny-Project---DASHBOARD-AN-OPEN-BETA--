@@ -17,3 +17,5 @@ In this version I show how to:
 This beta is inspired by the work of Jason Bryer -> https://github.com/jbryer 
 
 - Login page is fully refered in -> https://datastorm-open.github.io/shinymanager/
+
+![](Login(NewUser).gif)
